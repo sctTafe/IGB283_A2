@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-namespace ScottBarley.IGB283.Assessment2{
+namespace ScottBarley.IGB283.Assessment2
+{
     /// <summary>
     /// Based on workshop7 provided learning materials
     /// </summary>
@@ -20,12 +21,12 @@ namespace ScottBarley.IGB283.Assessment2{
         [SerializeField] private Material material;
 
 
-        private Mesh mesh;
+        private Mesh _mesh;
         // JointLocation is the position at which the limb is joined to its parent. We will use this as a pivot for rotating.
         private Vector2 _jointLocation;
         // Store the previous angle to undo
-        private float lastAngle = 0;
-        public float LastRotationAngle => lastAngle;
+        private float _lastAngle = 0;
+        public float LastRotationAngle => _lastAngle;
 
         // Runs before start
         private void Awake()
@@ -39,14 +40,8 @@ namespace ScottBarley.IGB283.Assessment2{
         {
             //Move limb to starting position
             fn_Move(initialJointLocation);
-
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
 
         private void OnEnable()
         {
@@ -76,7 +71,6 @@ namespace ScottBarley.IGB283.Assessment2{
         }
 
 
-
         private void DrawLimb()
         {
             // octagon
@@ -95,11 +89,11 @@ namespace ScottBarley.IGB283.Assessment2{
             for (int i = 0; i < _limbVertices.Length; i++)
             {
                 colors[i] = _colour;
-            } 
+            }
 
-            mesh.vertices = _limbVertices;
-            mesh.triangles = triangles;
-            mesh.colors = colors;
+            _mesh.vertices = _limbVertices;
+            _mesh.triangles = triangles;
+            _mesh.colors = colors;
         }
 
 
@@ -117,7 +111,7 @@ namespace ScottBarley.IGB283.Assessment2{
         {
             // Calculate the transformation matrices
             IGB283Transform tInv = IGB283Transform.Translate(-point.x, -point.y); //Move to origin
-            IGB283Transform rLastAngle = IGB283Transform.Rotate(-lastAngle); //Undo last rotation
+            IGB283Transform rLastAngle = IGB283Transform.Rotate(-_lastAngle); //Undo last rotation
             IGB283Transform rAngle = IGB283Transform.Rotate(angle); //Apply new rotation
             IGB283Transform t = IGB283Transform.Translate(point.x, point.y); //Move back
 
@@ -125,9 +119,13 @@ namespace ScottBarley.IGB283.Assessment2{
             ApplyTransformation(t * rAngle * rLastAngle * tInv);
 
             // Update the last angle
-            lastAngle = angle;
+            _lastAngle = angle;
         }
 
+        /// <summary>
+        /// Return to Zero Rotation about pivot point
+        /// </summary>
+        public void fn_RotateToZero() => fn_RotateAroundPoint(_jointLocation, -_lastAngle);
 
 
 
@@ -137,14 +135,14 @@ namespace ScottBarley.IGB283.Assessment2{
         private void ApplyTransformation(IGB283Transform transformation)
         {
             // Apply the transformation to each vertex
-            Vector3[] vertices = mesh.vertices;
+            Vector3[] vertices = _mesh.vertices;
             for (int i = 0; i < vertices.Length; i++)
             {
                 vertices[i] = transformation.MultiplyPoint(vertices[i]);
             }
             // Update the mesh
-            mesh.vertices = vertices;
-            mesh.RecalculateBounds();
+            _mesh.vertices = vertices;
+            _mesh.RecalculateBounds();
 
 
             // Update the joint location
@@ -153,7 +151,7 @@ namespace ScottBarley.IGB283.Assessment2{
             // Apply the offset to the child, if not null
             if (childObjects != null)
             {
-                if(childObjects.Count > 0)
+                if (childObjects.Count > 0)
                 {
                     for (int i = 0; i < childObjects.Count; i++)
                     {
@@ -176,10 +174,10 @@ namespace ScottBarley.IGB283.Assessment2{
                 renderer = gameObject.AddComponent<MeshRenderer>();
 
             // create a fresh mesh & assign to mesh filter
-            mesh = new Mesh();
-            meshFilter.mesh = mesh;
+            _mesh = new Mesh();
+            meshFilter.mesh = _mesh;
             // Clear all vertex and index data from the mesh
-            mesh.Clear();
+            _mesh.Clear();
 
             // Set the material to the material we have selected
             if (material != null)
