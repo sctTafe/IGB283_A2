@@ -1,13 +1,11 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-namespace ScottBarley.IGB283.Assessment2
+namespace ScottBarley.IGB283.Assessment2.Task4
 {
     /// <summary>
     /// Based on workshop7 provided learning materials
     /// </summary>
-    [Serializable]
     public class OctagonArticulator : MonoBehaviour
     {
         // Reference the limb’s child and controller
@@ -190,6 +188,7 @@ namespace ScottBarley.IGB283.Assessment2
                 Debug.LogWarning($"[{name}] No material assigned to OctagonArticulator!");
             }
         }
+
 
         [ContextMenu("Save Vertices To ScriptableObject")]
         public void fn_Util_SaveLimbVerticesToSO()
