@@ -44,15 +44,18 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         [Header("Animation - Head Wobble")]
         [SerializeField] float _maxWobbleRotation = 1f; //radians
         [SerializeField] float _wobbleRotationSpeed = 0.1f; //radians/s
-        [SerializeField] bool isWobbling = true;
+        [SerializeField] bool _isHeadWobbling = true;
         bool _HeadWobbleRotatingClockwise;
 
-
+        // -- Specail States --
+        float _collapseStateTimer;
+        bool _isCollapsed;
+        float _collaspeLimbSpeed = 2f;
 
         IGB283Vector _startingPosition;
         IGB283Vector _currentPosition;
         IGB283Vector _velocity = new IGB283Vector();
-        
+        private bool _isDebugging;
 
         private void Start()
         {
@@ -63,6 +66,8 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
         private void Update()
         {
+            // -- Collapse State --
+            Update_Collapse();
 
             // -- Character Movement --
 
@@ -71,25 +76,29 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             if (_isMovingSideToSide)
             {
                 VelocityHorizontal();
+                Update_CurrentPoisitonAndMove();
             }
 
-            Update_CurrentPoisitonAndMove();
-
-
+            
 
             // -- Animation --
-            if (isWobbling)
+            if (_isHeadWobbling)
             {
                 headBob();
                 UpperBodyBob();
             }
 
-            LeanInDirectionOfTravel();
-
+            if (_isMovingSideToSide)
+            {
+                LeanInDirectionOfTravel();
+            }
 
             // -- Debugging --
-            Debug.Log($"Velocity {_velocity}");
+            if (_isDebugging)
+                Debug.Log($"Velocity {_velocity}");
         }
+
+
 
         #region Movement
         void VelocityHorizontal()
@@ -138,16 +147,12 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             if (_triggerVerticalJump)
             {
                 TryVerticalJump();
-            }
-
-            if (_triggerForwardLeap)
+            } 
+            else if (_triggerForwardLeap)
             {
                 TryFowardLeap();
             }
-
-
-            //Handle Auto Jump
-            if (_isHopping)
+            else if (_isHopping)//Handle Auto Jump
             {
                 TryHop();
             }
@@ -224,6 +229,71 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             return false;
         }
         #endregion
+
+        #region Collapse State
+
+        float _collapseStateRecoveryTimer;
+
+        private void Handle_CollapseTrigger(float time)
+        {
+            _collapseStateTimer = Time.time + time;
+            _isCollapsed = true;
+
+            //disable other functions
+            _isHopping = false;
+            _triggerForwardLeap = false;
+            _triggerVerticalJump = false;
+            _isMovingSideToSide = false;
+            _isHeadWobbling = false;
+        }
+
+
+        private void Update_Collapse()
+        {
+  
+            if (_isCollapsed)
+            {
+                Debug.Log("Is Collapsed Currently");
+                CheckForEndOfCollapseState();
+                Animations_Collapse_KeyFrame();
+            }
+        }
+
+        private void CheckForEndOfCollapseState()
+        {
+            if (_collapseStateTimer > Time.time)
+                return;
+
+            Debug.Log("Collapsed End");
+            // Exit State
+            _isCollapsed = false;
+            _collapseStateRecoveryTimer = Time.time + 1f;
+        }
+
+
+
+        private void ReturnToStanding()
+        {
+            //_Root.fn_RotateTowardsoTargetAngleAtSpeed(3.61f, _collaspeLimbSpeed);
+        }
+
+        private void EndCollapseState()
+        {
+            _isHopping = false;
+            _isMovingSideToSide = false;
+        }
+
+
+        void Animations_Collapse_KeyFrame()
+        {
+            _HeadOctagon.fn_RotateTowardsoTargetAngleAtSpeed(1.58f, _collaspeLimbSpeed - _collaspeLimbSpeed/8);
+            _UperBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(0.5f, _collaspeLimbSpeed);
+            _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(-0.3f, _collaspeLimbSpeed);
+            _Root.fn_RotateTowardsoTargetAngleAtSpeed(1.57f, _collaspeLimbSpeed);
+        }
+
+        #endregion
+
 
         #region Animations
 
@@ -314,6 +384,9 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             }
         }
 
+
+
+
         internal void fn_SetMoveRight()
         {
             _MovingToTheRight = true;
@@ -341,8 +414,11 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
         internal void fn_Collapse(float time)
         {
-            throw new NotImplementedException();
+            Handle_CollapseTrigger(time);
+
         }
+
+
 
 
 

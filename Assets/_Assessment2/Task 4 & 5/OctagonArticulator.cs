@@ -124,8 +124,41 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         /// <summary>
         /// Return to Zero Rotation about pivot point
         /// </summary>
-        public void fn_RotateToZero() => fn_RotateAroundPoint(_jointLocation, -_lastAngle);
+        public void fn_RotateToZero() => fn_RotateTowardsoTargetAngleAtSpeed(0f, 1f);
 
+        /// <summary>
+        /// Rotate Smoothly towards a target angle, at input speed
+        /// </summary>
+        public void fn_RotateTowardsoTargetAngleAtSpeed(float targetAngle, float speed)
+        {
+
+            float diff = targetAngle - _lastAngle;
+
+            // If we're already close enough, just snap to the target
+            if (Mathf.Abs(diff) <= 0.001f)
+            {
+                fn_RotateAroundPoint(_jointLocation, targetAngle);
+                return;
+            }
+
+            // Rotation distance
+            float angleStep = speed * Time.deltaTime;
+
+            // Check if change is grater then required
+            if (Mathf.Abs(angleStep) > Mathf.Abs(diff))
+            {
+                // reached target
+                angleStep = diff; 
+            }
+            else
+            {
+                // move towards target, set direction +ve/-ve
+                angleStep = Mathf.Sign(diff) * angleStep; 
+            }
+
+            float newAngle = _lastAngle + angleStep;
+            fn_RotateAroundPoint(_jointLocation, newAngle);
+        }
 
 
 

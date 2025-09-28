@@ -1979,7 +1979,7 @@ MonoBehaviour:
   _isHopping: 1
   _hopHeight: 0.001
   _leapHeight: 0.0035
-  _jumpHeight: 0.005
+  _jumpHeight: 0.015
   _gravity: -0.25
   _isGrounded: 0
   _leanAngle: 0.25
