@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 namespace ScottBarley.IGB283.Assessment2.Task4
 {
@@ -10,16 +11,21 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         [SerializeField] OctagonArticulator _UperBodyOctagon;
         [SerializeField] OctagonArticulator _LowerBodyOctagon;
         [SerializeField] OctagonArticulator _Root;
+        
+        [Header("Debugging")]
+        [SerializeField] bool _isDebugging;
 
         // -- Movment --
 
         [Header("Movement - Sideways")]
+        [SerializeField] private float _horizontalDragCoefficient = 0.5f;   // strength of drag
+        [SerializeField] private float _horizontalDragPower = 2f;           // Growth of drag strength to speed; 1 = linear, 2 = quadratic, 3 = cubic
         [SerializeField] private bool _isMovingSideToSide;
-        [SerializeField] private bool _isAutoDirectionChange;
-        [SerializeField] float _speed;
+        [SerializeField] float _speed = 2f;
         [SerializeField] bool _MovingToTheRight;
 
         [Header("Boundaries - Sides")]
+        [SerializeField] private bool _isAutoDirectionChange;
         [SerializeField] float _xMaxBoundary = 15f;
         [SerializeField] float _xMinBoundary = -15f;
 
@@ -28,6 +34,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         [SerializeField] float _hopHeight = 0.0010f;
         [Header("Movement - Leaping")]
         [SerializeField] float _leapHeight = 0.0035f;
+        [SerializeField] float _leapForwardSpeed = 6f;
         private bool _triggerForwardLeap;
         [Header("Movement - Jumping")]
         [SerializeField] float _jumpHeight = 0.005f;
@@ -50,13 +57,14 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         // -- Specail States --
         float _collapseStateTimer;
         bool _isCollapsed;
+        private collapseStateStage _currentCollapseState;
         float _collaspeLimbSpeed = 2f;
 
         IGB283Vector _startingPosition;
         IGB283Vector _currentPosition;
         IGB283Vector _velocity = new IGB283Vector();
-        private bool _isDebugging;
 
+        #region Unity Native
         private void Start()
         {
             //Get starting postion of root
@@ -66,22 +74,17 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
         private void Update()
         {
-            // -- Collapse State --
-            Update_Collapse();
-
             // -- Character Movement --
+            Update_VelocityVertical();
+            Update_HorizontalVelocity();
+            Update_SpecialVelocity(); //Leap & Hop Changes
+            Update_CurrentPoisitonAndMove();
 
-            VelocityVertical();
-
-            if (_isMovingSideToSide)
-            {
-                VelocityHorizontal();
-                Update_CurrentPoisitonAndMove();
-            }
-
-            
 
             // -- Animation --
+
+            Update_CollapseStateAnimations();
+
             if (_isHeadWobbling)
             {
                 headBob();
@@ -95,38 +98,98 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
             // -- Debugging --
             if (_isDebugging)
+            {
                 Debug.Log($"Velocity {_velocity}");
+                Debug.Log($"Current Pos {_currentPosition}");
+            }
+        }
+        #endregion
+
+        #region Public
+        public void fn_SetMoveRight()
+        {
+            if (_isDebugging) Debug.Log("fn_SetMoveRight Called");
+            _MovingToTheRight = true;
+            _velocity.x = 0;
         }
 
+        public void fn_SetMoveLeft()
+        {
+            if (_isDebugging) Debug.Log("fn_SetMoveLeft Called");
+            _MovingToTheRight = false;
+            _velocity.x = 0;
+        }
 
+        public void fn_TryJump_Up()
+        {
+            if (_isDebugging) Debug.Log("fn_TryJump_Up Called");
+            // Trigger for next Update Pass where isGrounded
+            _triggerVerticalJump = true;
+        }
+
+        public void fn_TryJump_Forward()
+        {
+            if (_isDebugging) Debug.Log("fn_TryJump_Forward Called");
+            // Trigger for next Update Pass where isGrounded
+            _triggerForwardLeap = true;
+        }
+
+        public void fn_Collapse(float time)
+        {
+            Handle_CollapseTrigger(time);
+
+        }
+        #endregion
 
         #region Movement
-        void VelocityHorizontal()
+        void Update_HorizontalVelocity()
         {
+
+            if (!_isMovingSideToSide)
+            {
+                _velocity.x = 0;
+                return;
+            }
+
             //Boundary Interaction - Handles Auto change in driection
             if (_isAutoDirectionChange)
             {
                 var currentX = _currentPosition.x;
                 if (currentX < _xMinBoundary)
+                {
                     _MovingToTheRight = true;
+                    _velocity.x = 0;
+                }
+
                 if (currentX > _xMaxBoundary)
+                {
                     _MovingToTheRight = false;
+                    _velocity.x = 0;
+                }
+            }
+            
+            var absVel = Mathf.Abs(_velocity.x);
+            //// Drag
+            if (absVel > _speed)
+            {
+                float drag = _horizontalDragCoefficient * Mathf.Pow(Mathf.Abs(_velocity.x), _horizontalDragPower);
+                
+                // Reduce velocity toward 0, preserving sign
+                if (_velocity.x > 0f)
+                    _velocity.x = Mathf.Max(0f, _velocity.x - drag);
+                else
+                    _velocity.x = Mathf.Min(0f, _velocity.x + drag);
             }
 
-            var displacementAmount = Time.deltaTime * _speed;
-
-            if (_MovingToTheRight) //Moving along +ve X           
-                _velocity.x = displacementAmount;
-            else
-                _velocity.x = -displacementAmount;
-
-
+            if(absVel < _speed)
+            {
+                // Base hopping velocity
+                _velocity.x = (_MovingToTheRight ? 1f : -1f) * _speed;
+            }
         }
 
 
-
-
-        void VelocityVertical()
+        void Update_VelocityVertical()
         {
             // Check if Grounded
             IsGrounded();
@@ -143,11 +206,18 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 // Update Vertical Velocity
                 UpdateVerticalVelocity_ApplyGravity();
             }
+        }
+
+        void Update_SpecialVelocity()
+        {
+            // If in Collapse state, stop taking input from jumping
+            if (_isCollapsed)
+                return;
 
             if (_triggerVerticalJump)
             {
                 TryVerticalJump();
-            } 
+            }
             else if (_triggerForwardLeap)
             {
                 TryFowardLeap();
@@ -156,7 +226,6 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             {
                 TryHop();
             }
-
         }
 
 
@@ -164,15 +233,17 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         void Update_CurrentPoisitonAndMove()
         {
             // Update current position with the velocity
-            _currentPosition += _velocity;
-            _Root.fn_Move(_velocity);
+            var stepVelocity = _velocity * Time.deltaTime;
+
+            _currentPosition += stepVelocity;
+            _Root.fn_Move(stepVelocity);
         }
 
 
         void UpdateVerticalVelocity_ApplyGravity()
         {
             // Apply gravity
-            _velocity.y += _gravity * Time.deltaTime;
+            _velocity.y += _gravity;
 
             // Terminal velocity limit 
             _velocity.y = Mathf.Max(_velocity.y, -20f);
@@ -211,6 +282,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             {
                 Debug.Log("TryVerticalJump Called Sucessfully");
                 _velocity.y = Mathf.Sqrt(_leapHeight * -2f * _gravity);
+                _velocity.x = (_MovingToTheRight ? 1f : -1f) * _leapForwardSpeed;
                 _triggerForwardLeap = false;
             }
         }
@@ -231,13 +303,16 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         #endregion
 
         #region Collapse State
-
-        float _collapseStateRecoveryTimer;
-
-        private void Handle_CollapseTrigger(float time)
+        enum collapseStateStage
         {
-            _collapseStateTimer = Time.time + time;
+            onFloor,
+            gettingUp
+        }
+        private void Handle_CollapseTrigger(float time)
+        {          
             _isCollapsed = true;
+            _currentCollapseState = collapseStateStage.onFloor;
+            StartCoroutine(WaitAndDo(time, Handle_EndOnFloorStage));
 
             //disable other functions
             _isHopping = false;
@@ -246,56 +321,65 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             _isMovingSideToSide = false;
             _isHeadWobbling = false;
         }
-
-
-        private void Update_Collapse()
+        void Handle_EndOnFloorStage()
         {
-  
-            if (_isCollapsed)
-            {
-                Debug.Log("Is Collapsed Currently");
-                CheckForEndOfCollapseState();
-                Animations_Collapse_KeyFrame();
-            }
+            _currentCollapseState = collapseStateStage.gettingUp;
+            StartCoroutine(WaitAndDo(1.2f, Handle_EndCollapseState));
         }
 
-        private void CheckForEndOfCollapseState()
-        {
-            if (_collapseStateTimer > Time.time)
-                return;
-
-            Debug.Log("Collapsed End");
-            // Exit State
+        private void Handle_EndCollapseState()
+        {       
             _isCollapsed = false;
-            _collapseStateRecoveryTimer = Time.time + 1f;
+
+            _velocity = IGB283Vector.Zero;
+            //reenable other functions
+            _isHopping = true;
+            _isMovingSideToSide = true;
+            _isHeadWobbling = true;
         }
 
 
-
-        private void ReturnToStanding()
+        // Main Collapse Handling Loop
+        private void Update_CollapseStateAnimations()
         {
-            //_Root.fn_RotateTowardsoTargetAngleAtSpeed(3.61f, _collaspeLimbSpeed);
+            if (!_isCollapsed)
+                return;
+            
+            Debug.Log("Is Collapsed Currently");
+
+            //Collapsed Animation State
+            if(_currentCollapseState == collapseStateStage.onFloor)
+                Animations_Collapse_KeyFrame();
+            else
+                Animations_StoodUp_KeyFrame();                     
         }
 
-        private void EndCollapseState()
-        {
-            _isHopping = false;
-            _isMovingSideToSide = false;
+
+        public IEnumerator WaitAndDo(float delay, Action action)
+        { 
+            yield return new WaitForSeconds(delay);
+            action?.Invoke();
         }
+        #endregion
 
-
+        #region Animations
         void Animations_Collapse_KeyFrame()
         {
-            _HeadOctagon.fn_RotateTowardsoTargetAngleAtSpeed(1.58f, _collaspeLimbSpeed - _collaspeLimbSpeed/8);
+            _HeadOctagon.fn_RotateTowardsoTargetAngleAtSpeed(1.58f, _collaspeLimbSpeed - _collaspeLimbSpeed / 8);
             _UperBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(0.5f, _collaspeLimbSpeed);
             _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(-0.3f, _collaspeLimbSpeed);
             _Root.fn_RotateTowardsoTargetAngleAtSpeed(1.57f, _collaspeLimbSpeed);
         }
 
-        #endregion
+        void Animations_StoodUp_KeyFrame()
+        {
+            _HeadOctagon.fn_RotateTowardsoTargetAngleAtSpeed(0f, _collaspeLimbSpeed);
+            _UperBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(0f, _collaspeLimbSpeed);
+            _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(0f, _collaspeLimbSpeed);
+            _Root.fn_RotateTowardsoTargetAngleAtSpeed(0f, _collaspeLimbSpeed);
+        }
 
 
-        #region Animations
 
         /// <summary>
         /// Lean in the direction of travel from the lower body pivot point
@@ -383,45 +467,6 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 _UperBodyOctagon.fn_RotatePartAroundPivot(currentAngle -= Time.deltaTime * _wobbleRotationSpeed);
             }
         }
-
-
-
-
-        internal void fn_SetMoveRight()
-        {
-            _MovingToTheRight = true;
-        }
-
-        internal void fn_SetMoveLeft()
-        {
-            _MovingToTheRight = false;
-        }
-
-
-
-        internal void fn_TryJump_Up()
-        {
-            // Trigger for next Update Pass where isGrounded
-            _triggerVerticalJump = true;
-        }
-
-        internal void fn_TryJump_Forward()
-        {
-            // Trigger for next Update Pass where isGrounded
-            _triggerForwardLeap = true;
-        }
-
-
-        internal void fn_Collapse(float time)
-        {
-            Handle_CollapseTrigger(time);
-
-        }
-
-
-
-
-
         #endregion
     }
 }

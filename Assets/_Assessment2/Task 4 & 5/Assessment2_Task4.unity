@@ -1970,23 +1970,27 @@ MonoBehaviour:
   _UperBodyOctagon: {fileID: 9087502606367769146}
   _LowerBodyOctagon: {fileID: 1398337149}
   _Root: {fileID: 1986339258}
+  _isDebugging: 1
+  _horizontalDragCoefficient: 0.001
+  _horizontalDragPower: 2
   _isMovingSideToSide: 1
-  _isAutoDirectionChange: 1
   _speed: 2
   _MovingToTheRight: 1
+  _isAutoDirectionChange: 1
   _xMaxBoundary: 15
   _xMinBoundary: -15
   _isHopping: 1
-  _hopHeight: 0.001
-  _leapHeight: 0.0035
-  _jumpHeight: 0.015
+  _hopHeight: 100
+  _leapHeight: 500
+  _leapForwardSpeed: 20
+  _jumpHeight: 1000
   _gravity: -0.25
   _isGrounded: 0
   _leanAngle: 0.25
   _isLeaningLeft: 0
   _maxWobbleRotation: 0.35
   _wobbleRotationSpeed: 0.8
-  isWobbling: 1
+  _isHeadWobbling: 1
 --- !u!1 &569695541
 GameObject:
   m_ObjectHideFlags: 0
