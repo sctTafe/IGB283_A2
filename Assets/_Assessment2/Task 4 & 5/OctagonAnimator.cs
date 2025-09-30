@@ -415,8 +415,9 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 //_LowerBodyOctagon.fn_RotatePartAroundPivot(-_leanAngle);
                 _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(-_leanAngle, 0.5f);
 
+                _LArm?.fn_RotateDownChain(DegToRad(0), _collaspeLimbSpeed/2f);
                 _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(50), _collaspeLimbSpeed);
-                _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(10), _collaspeLimbSpeed);
+                _RArm?.fn_RotateDownChain(DegToRad(10), _collaspeLimbSpeed);
             }
 
             // moving left
@@ -426,7 +427,8 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 //_LowerBodyOctagon.fn_RotatePartAroundPivot(_leanAngle);
                 _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(_leanAngle, 0.5f);
 
-                _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-10), _collaspeLimbSpeed);
+                _LArm?.fn_RotateDownChain(DegToRad(-10), _collaspeLimbSpeed);
+                _RArm?.fn_RotateDownChain(DegToRad(0), _collaspeLimbSpeed / 2f);
                 _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-50), _collaspeLimbSpeed);
             }
         }
