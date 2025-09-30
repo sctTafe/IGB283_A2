@@ -62,12 +62,6 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
         }
 
-        /// <summary>
-        /// Rotate part around privot to the desired angle (rad)
-        /// </summary>
-        public void fn_RotatePartAroundPivot(float value) => fn_RotateAroundPoint(_jointLocation, value);
-
-
 
         private void Handle_OnRotateControlChanged(float value)
         {
@@ -79,30 +73,14 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         }
 
 
-        private void DrawLimb()
-        {
-            // octagon
-            int[] triangles = new int[]
-            {
-                0, 1, 2,    // t0
-                0, 2, 3,    // t1
-                0, 3, 4,    // t2
-                0, 4, 5,    // t3
-                0, 5, 6,    // t4
-                0, 6, 7,    // t5
-            };
 
-            Color[] colors = new Color[_limbVertices.Length];
 
-            for (int i = 0; i < _limbVertices.Length; i++)
-            {
-                colors[i] = _colour;
-            }
 
-            _mesh.vertices = _limbVertices;
-            _mesh.triangles = triangles;
-            _mesh.colors = colors;
-        }
+
+        /// <summary>
+        /// Rotate part around privot to the desired angle (rad)
+        /// </summary>
+        public void fn_RotatePartAroundPivot(float value) => fn_RotateAroundPoint(_jointLocation, value);
 
 
 
@@ -249,6 +227,32 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 Debug.LogWarning($"[{name}] No material assigned to OctagonArticulator!");
             }
         }
+
+        private void DrawLimb()
+        {
+            // octagon
+            int[] triangles = new int[]
+            {
+                0, 1, 2,    // t0
+                0, 2, 3,    // t1
+                0, 3, 4,    // t2
+                0, 4, 5,    // t3
+                0, 5, 6,    // t4
+                0, 6, 7,    // t5
+            };
+
+            Color[] colors = new Color[_limbVertices.Length];
+
+            for (int i = 0; i < _limbVertices.Length; i++)
+            {
+                colors[i] = _colour;
+            }
+
+            _mesh.vertices = _limbVertices;
+            _mesh.triangles = triangles;
+            _mesh.colors = colors;
+        }
+
 
 
         [ContextMenu("Save Vertices To SO")]

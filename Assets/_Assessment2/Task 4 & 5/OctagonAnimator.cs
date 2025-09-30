@@ -11,7 +11,9 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         [SerializeField] OctagonArticulator _UperBodyOctagon;
         [SerializeField] OctagonArticulator _LowerBodyOctagon;
         [SerializeField] OctagonArticulator _Root;
-        
+        [SerializeField] OctagonArticulator _LArm;
+        [SerializeField] OctagonArticulator _RArm;
+
         [Header("Debugging")]
         [SerializeField] bool _isDebugging;
 
@@ -262,7 +264,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         {
             if (_isGrounded)
             {
-                Debug.Log("TryHop Called Sucessfully");
+                if(_isDebugging) Debug.Log("TryHop Called Sucessfully");
                 _velocity.y = Mathf.Sqrt(_hopHeight * -2f * _gravity);
             }
         }
@@ -270,7 +272,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         {
             if (_isGrounded)
             {
-                Debug.Log("TryVerticalJump Called Sucessfully");
+                if (_isDebugging) Debug.Log("TryVerticalJump Called Sucessfully");
                 _velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
                 _triggerVerticalJump = false;
             }
@@ -280,7 +282,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         {
             if (_isGrounded)
             {
-                Debug.Log("TryVerticalJump Called Sucessfully");
+                if (_isDebugging) Debug.Log("TryVerticalJump Called Sucessfully");
                 _velocity.y = Mathf.Sqrt(_leapHeight * -2f * _gravity);
                 _velocity.x = (_MovingToTheRight ? 1f : -1f) * _leapForwardSpeed;
                 _triggerForwardLeap = false;
@@ -362,13 +364,24 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         }
         #endregion
 
+
+        private float DegToRad(float deg) => deg * (Mathf.PI / 180f);
+
+
+
+
         #region Animations
+
+        #region Sub - Collapse
         void Animations_Collapse_KeyFrame()
         {
             _HeadOctagon.fn_RotateTowardsoTargetAngleAtSpeed(1.58f, _collaspeLimbSpeed - _collaspeLimbSpeed / 8);
             _UperBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(0.5f, _collaspeLimbSpeed);
             _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(-0.3f, _collaspeLimbSpeed);
             _Root.fn_RotateTowardsoTargetAngleAtSpeed(1.57f, _collaspeLimbSpeed);
+
+            _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(90), _collaspeLimbSpeed);
+            _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-90), _collaspeLimbSpeed);
         }
 
         void Animations_StoodUp_KeyFrame()
@@ -377,10 +390,13 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             _UperBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(0f, _collaspeLimbSpeed);
             _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(0f, _collaspeLimbSpeed);
             _Root.fn_RotateTowardsoTargetAngleAtSpeed(0f, _collaspeLimbSpeed);
+                     
+            _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(0), _collaspeLimbSpeed);
+            _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(0), _collaspeLimbSpeed);
         }
+        #endregion
 
-
-
+        #region Sub - Walking
         /// <summary>
         /// Lean in the direction of travel from the lower body pivot point
         /// </summary>
@@ -389,22 +405,38 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             // Not Leaning
             if (_velocity.x == 0f)
             {
-                _LowerBodyOctagon.fn_RotateToZero();
+                _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(0f, 0.5f);
             }
 
-
+            // moving right
             if (_velocity.x > 0.001f)
             {
-                _LowerBodyOctagon.fn_RotateToZero();
-                _LowerBodyOctagon.fn_RotatePartAroundPivot(-_leanAngle);
+                //_LowerBodyOctagon.fn_RotateToZero();
+                //_LowerBodyOctagon.fn_RotatePartAroundPivot(-_leanAngle);
+                _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(-_leanAngle, 0.5f);
+
+                _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(50), _collaspeLimbSpeed);
+                _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(10), _collaspeLimbSpeed);
             }
 
+            // moving left
             if (_velocity.x < -0.001f)
             {
-                _LowerBodyOctagon.fn_RotateToZero();
-                _LowerBodyOctagon.fn_RotatePartAroundPivot(_leanAngle);
+                //_LowerBodyOctagon.fn_RotateToZero();
+                //_LowerBodyOctagon.fn_RotatePartAroundPivot(_leanAngle);
+                _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(_leanAngle, 0.5f);
+
+                _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-10), _collaspeLimbSpeed);
+                _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-50), _collaspeLimbSpeed);
             }
         }
+
+        #endregion
+
+
+
+
+
 
 
         /// <summary>
