@@ -191,42 +191,26 @@ namespace ScottBarley.IGB283.Assessment2
             }
         }
 
-        [ContextMenu("Save Vertices To ScriptableObject")]
+        [ContextMenu("Save Vertices To SO")]
         public void fn_Util_SaveLimbVerticesToSO()
         {
-            if (_vertexDataSO != null && _limbVertices != null)
-            {
-                _vertexDataSO.SaveVertices(_limbVertices);
-                Debug.Log($"Saved {_limbVertices.Length} vertices from {name} into {_vertexDataSO.name}");
-            }
-            else
-            {
-                Debug.LogWarning($"[{name}] Could not save vertices, targetSO or _limbVertices is null.");
-            }
+            _vertexDataSO.SaveVertices(_limbVertices);
+            Debug.Log($"Saved {_limbVertices.Length} vertices from {name} into {_vertexDataSO.name}");
         }
 
-        [ContextMenu("Load Vertices From ScriptableObject")]
+        [ContextMenu("Load Vertices From SO")]
         public void fn_Util_LoadLimbVerticesFromSO()
         {
-            if (_vertexDataSO != null && _vertexDataSO.Vertices != null)
+            // Clear existing vertices
+            _limbVertices = null;
+            // Copy the vertices from SO
+            Vector3[] saved = _vertexDataSO.Vertices;
+            _limbVertices = new Vector3[saved.Length];
+            for (int i = 0; i < saved.Length; i++)
             {
-                // Clear existing vertices
-                _limbVertices = null;
-
-                // Copy the vertices from SO
-                Vector3[] saved = _vertexDataSO.Vertices;
-                _limbVertices = new Vector3[saved.Length];
-                for (int i = 0; i < saved.Length; i++)
-                {
-                    _limbVertices[i] = saved[i];
-                }
-
-                Debug.Log($"Loaded {_limbVertices.Length} vertices from {_vertexDataSO.name} into {name}");
+                _limbVertices[i] = saved[i];
             }
-            else
-            {
-                Debug.LogWarning($"[{name}] Could not load vertices, targetSO or stored data is null.");
-            }
+            Debug.Log($"Loaded {_limbVertices.Length} vertices from {_vertexDataSO.name} into {name}");
         }
     }
 }

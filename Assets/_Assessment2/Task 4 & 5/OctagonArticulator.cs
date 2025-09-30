@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 namespace ScottBarley.IGB283.Assessment2.Task4
@@ -8,9 +8,10 @@ namespace ScottBarley.IGB283.Assessment2.Task4
     /// </summary>
     public class OctagonArticulator : MonoBehaviour
     {
-        // Reference the limb�s child and controller
+        // Reference the limb’s child and controller
         [SerializeField] private List<OctagonArticulator> childObjects;
-        [SerializeField] private Slider control;
+        [SerializeField] private Slider _controlRInput; // Rotate Input
+        [SerializeField] private Slider _controlSInput; // Scale Input
         // Keep the joint location from being altered after Start
         [SerializeField] private Vector2 initialJointLocation;
         // The corner positions of each limb
@@ -25,6 +26,8 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         private Vector2 _jointLocation;
         // Store the previous angle to undo
         private float _lastAngle = 0;
+        private float _lastScale;
+
         public float LastRotationAngle => _lastAngle;
 
         // Runs before start
@@ -44,17 +47,19 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
         private void OnEnable()
         {
-            if (control != null)
-            {
-                control.onValueChanged.AddListener(OnControlChanged);
-            }
+            if (_controlRInput != null)
+                _controlRInput.onValueChanged.AddListener(Handle_OnRotateControlChanged);
+            if (_controlSInput != null)
+                _controlSInput.onValueChanged.AddListener(Handle_OnScaleControlChanged);
+
         }
         private void OnDisable()
         {
-            if (control != null)
-            {
-                control.onValueChanged.RemoveListener(OnControlChanged);
-            }
+            if (_controlRInput != null)          
+                _controlRInput.onValueChanged.RemoveListener(Handle_OnRotateControlChanged);
+            if (_controlSInput != null)
+                _controlSInput.onValueChanged.AddListener(Handle_OnScaleControlChanged);
+
         }
 
         /// <summary>
@@ -64,9 +69,13 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
 
 
-        private void OnControlChanged(float value)
+        private void Handle_OnRotateControlChanged(float value)
         {
             fn_RotateAroundPoint(_jointLocation, value);
+        }
+        private void Handle_OnScaleControlChanged(float value)
+        {
+            fn_ScalePoint(_jointLocation, value);
         }
 
 
@@ -105,7 +114,10 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             ApplyTransformation(t);
         }
 
-        // Rotate the limb around a point
+
+        /// <summary>
+        ///  Rotate the limb around a point
+        /// </summary>
         private void fn_RotateAroundPoint(Vector2 point, float angle)
         {
             // Calculate the transformation matrices
@@ -120,6 +132,22 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             // Update the last angle
             _lastAngle = angle;
         }
+        /// <summary>
+        ///  Scale the limb around a point
+        /// </summary>
+        private void fn_ScalePoint(Vector2 point, float scale)
+        {
+            // Move mesh to origin → scale → move back
+            IGB283Transform t = IGB283Transform.Translate(point.x, point.y);
+            IGB283Transform s = IGB283Transform.Scale(scale, scale);
+            IGB283Transform tInv = IGB283Transform.Translate(-point.x, -point.y);
+
+            ApplyTransformation(t * s * tInv);
+
+            _lastScale = scale;
+        }
+    
+
 
         /// <summary>
         /// Return to Zero Rotation about pivot point
@@ -223,28 +251,26 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         }
 
 
-        [ContextMenu("Save Vertices To ScriptableObject")]
+        [ContextMenu("Save Vertices To SO")]
         public void fn_Util_SaveLimbVerticesToSO()
         {
-            if (_vertexDataSO != null && _limbVertices != null)
-            {
-                _vertexDataSO.SaveVertices(_limbVertices);
-                Debug.Log($"Saved {_limbVertices.Length} vertices from {name} into {_vertexDataSO.name}");
-            }
-            else
-            {
-                Debug.LogWarning($"[{name}] Could not save vertices, targetSO or _limbVertices is null.");
-            }
+            _vertexDataSO.SaveVertices(_limbVertices);
+            Debug.Log($"Saved {_limbVertices.Length} vertices from {name} into {_vertexDataSO.name}");
         }
 
-        [ContextMenu("Load Vertices From ScriptableObject")]
+        [ContextMenu("Save Current Mesh Vertices To SO")]
+        public void fn_Util_SaveCurrentMeshVerticesToSO()
+        {
+            Vector3[] currentVertices = _mesh.vertices;
+            _vertexDataSO.SaveVertices(currentVertices);
+            Debug.Log($"[{name}] Saved {currentVertices.Length} CURRENT vertices into {_vertexDataSO.name}");
+        }
+
+        [ContextMenu("Load Vertices From SO")]
         public void fn_Util_LoadLimbVerticesFromSO()
         {
-            if (_vertexDataSO != null && _vertexDataSO.Vertices != null)
-            {
                 // Clear existing vertices
                 _limbVertices = null;
-
                 // Copy the vertices from SO
                 Vector3[] saved = _vertexDataSO.Vertices;
                 _limbVertices = new Vector3[saved.Length];
@@ -252,13 +278,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 {
                     _limbVertices[i] = saved[i];
                 }
-
                 Debug.Log($"Loaded {_limbVertices.Length} vertices from {_vertexDataSO.name} into {name}");
-            }
-            else
-            {
-                Debug.LogWarning($"[{name}] Could not load vertices, targetSO or stored data is null.");
-            }
         }
     }
 }
