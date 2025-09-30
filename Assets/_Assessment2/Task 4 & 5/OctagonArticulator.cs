@@ -73,14 +73,14 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         }
 
 
-        public void fn_RotateDownChain(float rotationAmount, float speed = 1f)
+        public void fn_RotateToTargetAngle_DownChain(float rotationAmount, float speed = 1f)
         {
             fn_RotateTowardsoTargetAngleAtSpeed(rotationAmount, speed);
             if (childObjects.Count > 0) 
             {
                 foreach (var child in childObjects)
                 {
-                    child.fn_RotateDownChain(rotationAmount);
+                    child.fn_RotateToTargetAngle_DownChain(rotationAmount);
                 }
             }
         }

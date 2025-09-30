@@ -66,6 +66,17 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         IGB283Vector _currentPosition;
         IGB283Vector _velocity = new IGB283Vector();
 
+
+        public enum AnimationsState
+        {
+            Hopping,
+            Jumping,
+            FowardLeaping,
+            Collapsed
+        }
+
+        AnimationsState _currentAimationState = AnimationsState.Hopping;
+
         #region Unity Native
         private void Start()
         {
@@ -84,27 +95,38 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
 
             // -- Animation --
-
             Update_CollapseStateAnimations();
 
-            if (_isHeadWobbling)
+            switch (_currentAimationState)
             {
-                headBob();
-                UpperBodyBob();
+                case AnimationsState.Hopping:
+                    Update_AnimationState_Hopping();
+                    break;
+                case AnimationsState.Jumping:
+                    Update_AnimationState_Jumping();
+                    break;
+                case AnimationsState.FowardLeaping:
+                    break;
+                case AnimationsState.Collapsed:
+                    break;
+
+                default:
+                    break;
             }
 
-            if (_isMovingSideToSide)
-            {
-                LeanInDirectionOfTravel();
-            }
-
+           
             // -- Debugging --
             if (_isDebugging)
             {
                 Debug.Log($"Velocity {_velocity}");
                 Debug.Log($"Current Pos {_currentPosition}");
             }
+
         }
+
+
+
+
         #endregion
 
         #region Public
@@ -275,6 +297,8 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 if (_isDebugging) Debug.Log("TryVerticalJump Called Sucessfully");
                 _velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
                 _triggerVerticalJump = false;
+
+                Trigger_JumpAnimationState();
             }
         }
 
@@ -372,6 +396,80 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
         #region Animations
 
+
+        private void Update_AnimationState_Hopping()
+        {
+            if (_isHeadWobbling)
+            {
+                headBob();
+                UpperBodyBob();
+            }
+
+            if (_isMovingSideToSide)
+            {
+                LeanInDirectionOfTravel();
+            }
+        }
+
+
+
+        #region Sun - Jumping
+        public enum jumpingStateStage
+        {
+            jumpPrep,
+            JumpMain
+        }
+        jumpingStateStage _currentJumpingStageState;
+        void Update_AnimationState_Jumping()
+        {
+            if (_currentJumpingStageState == jumpingStateStage.jumpPrep)
+                Animations_Jump_Prep();
+            else
+                Animation_Jump_ArmsUp();
+        }
+
+        private void Trigger_JumpAnimationState()
+        {
+            _currentAimationState = AnimationsState.Jumping;
+            _currentJumpingStageState = jumpingStateStage.jumpPrep;
+            StartCoroutine(WaitAndDo(0.1f, Handle_EndOfJumpPrepStage));
+        }
+
+        void Handle_EndOfJumpPrepStage()
+        {
+            _currentJumpingStageState = jumpingStateStage.JumpMain;
+            StartCoroutine(WaitAndDo(0.5f, Handle_EndOfJump));
+        }
+
+        void Handle_EndOfJump()
+        {
+            _currentAimationState = AnimationsState.Hopping;
+        }
+
+
+        void Animations_Jump_Prep()
+        {
+            //Debug.Log("Animations_Jump_Prep Called");
+            _Root.fn_RotateToTargetAngle_DownChain(0f, _collaspeLimbSpeed * 5);
+            //_RArm?.fn_RotateDownChain(DegToRad(30), 0.5f);
+            //_RArm?.fn_RotateDownChain(DegToRad(-30), 0.5f);
+
+            _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-45), _collaspeLimbSpeed * 10 );
+            _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-45), _collaspeLimbSpeed * 10);
+        }
+        void Animation_Jump_ArmsUp()
+        {
+            _Root.fn_RotateToTargetAngle_DownChain(0f, _collaspeLimbSpeed * 5);
+
+            //_RArm?.fn_RotateDownChain(DegToRad(-50), _collaspeLimbSpeed * 10);
+            //_RArm?.fn_RotateDownChain(DegToRad(+50), _collaspeLimbSpeed * 10);
+
+
+            _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(45), _collaspeLimbSpeed * 10);
+            _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-45), _collaspeLimbSpeed * 10);
+        }
+        #endregion
+
         #region Sub - Collapse
         void Animations_Collapse_KeyFrame()
         {
@@ -396,7 +494,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         }
         #endregion
 
-        #region Sub - Walking
+        #region Sub - Hopping
         /// <summary>
         /// Lean in the direction of travel from the lower body pivot point
         /// </summary>
@@ -415,9 +513,9 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 //_LowerBodyOctagon.fn_RotatePartAroundPivot(-_leanAngle);
                 _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(-_leanAngle, 0.5f);
 
-                _LArm?.fn_RotateDownChain(DegToRad(0), _collaspeLimbSpeed/2f);
+                _LArm?.fn_RotateToTargetAngle_DownChain(DegToRad(0), _collaspeLimbSpeed/2f);
                 _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(50), _collaspeLimbSpeed);
-                _RArm?.fn_RotateDownChain(DegToRad(10), _collaspeLimbSpeed);
+                _RArm?.fn_RotateToTargetAngle_DownChain(DegToRad(10), _collaspeLimbSpeed);
             }
 
             // moving left
@@ -427,20 +525,11 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 //_LowerBodyOctagon.fn_RotatePartAroundPivot(_leanAngle);
                 _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(_leanAngle, 0.5f);
 
-                _LArm?.fn_RotateDownChain(DegToRad(-10), _collaspeLimbSpeed);
-                _RArm?.fn_RotateDownChain(DegToRad(0), _collaspeLimbSpeed / 2f);
+                _LArm?.fn_RotateToTargetAngle_DownChain(DegToRad(-10), _collaspeLimbSpeed);
+                _RArm?.fn_RotateToTargetAngle_DownChain(DegToRad(0), _collaspeLimbSpeed / 2f);
                 _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-50), _collaspeLimbSpeed);
             }
         }
-
-        #endregion
-
-
-
-
-
-
-
         /// <summary>
         /// Rotates 'head' around piviot, ping ponging between a user specified angle 
         /// </summary>
@@ -501,6 +590,8 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 _UperBodyOctagon.fn_RotatePartAroundPivot(currentAngle -= Time.deltaTime * _wobbleRotationSpeed);
             }
         }
+        #endregion
+
         #endregion
     }
 }
