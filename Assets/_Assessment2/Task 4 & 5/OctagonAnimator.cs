@@ -47,12 +47,12 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         // -- Animations --
 
         [Header("Animation - Lean In Direction Of Travel")]
-        [SerializeField] float _leanAngle = 0.25f; //radians
+        float _leanAngle = 0.15f; //radians
         [SerializeField] bool _isLeaningLeft;
 
         [Header("Animation - Head Wobble")]
-        [SerializeField] float _maxWobbleRotation = 1f; //radians
-        [SerializeField] float _wobbleRotationSpeed = 0.1f; //radians/s
+        float _maxWobbleRotation = 0.25f; //radians
+        float _wobbleRotationSpeed = 0.7f; //radians/s
         [SerializeField] bool _isHeadWobbling = true;
         bool _HeadWobbleRotatingClockwise;
 
@@ -94,6 +94,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             Update_CurrentPoisitonAndMove();
 
 
+
             // -- Animation --
             Update_CollapseStateAnimations();
 
@@ -106,6 +107,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                     Update_AnimationState_Jumping();
                     break;
                 case AnimationsState.FowardLeaping:
+                    Update_AnimationState_FowardLeap();
                     break;
                 case AnimationsState.Collapsed:
                     break;
@@ -123,9 +125,6 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             }
 
         }
-
-
-
 
         #endregion
 
@@ -310,6 +309,8 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 _velocity.y = Mathf.Sqrt(_leapHeight * -2f * _gravity);
                 _velocity.x = (_MovingToTheRight ? 1f : -1f) * _leapForwardSpeed;
                 _triggerForwardLeap = false;
+
+                Trigger_LeapAnimationState();
             }
         }
 
@@ -449,29 +450,59 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
         void Animations_Jump_Prep()
         {
-            //Debug.Log("Animations_Jump_Prep Called");
-            _Root.fn_RotateToTargetAngle_DownChain(0f, _collaspeLimbSpeed * 5);
-            //_RArm?.fn_RotateDownChain(DegToRad(30), 0.5f);
-            //_RArm?.fn_RotateDownChain(DegToRad(-30), 0.5f);
 
+            _Root.fn_RotateToTargetAngle_DownChain(0f, _collaspeLimbSpeed * 5);
             _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-45), _collaspeLimbSpeed * 10 );
             _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-45), _collaspeLimbSpeed * 10);
         }
         void Animation_Jump_ArmsUp()
         {
             _Root.fn_RotateToTargetAngle_DownChain(0f, _collaspeLimbSpeed * 5);
-
-            //_RArm?.fn_RotateDownChain(DegToRad(-50), _collaspeLimbSpeed * 10);
-            //_RArm?.fn_RotateDownChain(DegToRad(+50), _collaspeLimbSpeed * 10);
-
-
             _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(45), _collaspeLimbSpeed * 10);
             _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-45), _collaspeLimbSpeed * 10);
         }
         #endregion
 
-        #region Sub - Collapse
-        void Animations_Collapse_KeyFrame()
+        #region Foward Leap
+        private void Update_AnimationState_FowardLeap()
+        {
+            Animation_Leap();
+        }
+
+        private void Trigger_LeapAnimationState()
+        {
+            _currentAimationState = AnimationsState.FowardLeaping;
+            StartCoroutine(WaitAndDo(0.8f, Handle_EndOfLeap));
+        }
+
+        void Handle_EndOfLeap()
+        {
+            _currentAimationState = AnimationsState.Hopping;
+        }
+
+        void Animation_Leap()
+        {
+            // Lean Into Leap & Lower arms
+            if (_MovingToTheRight)
+            {
+                _LowerBodyOctagon.fn_RotateToTargetAngle_DownChain(DegToRad(-45), _collaspeLimbSpeed * 8);
+                _RArm?.fn_RotateToTargetAngle_DownChain(DegToRad(-30), _collaspeLimbSpeed * 20);
+                _LArm?.fn_RotateToTargetAngle_DownChain(DegToRad(30), _collaspeLimbSpeed * 20);
+            }
+            else
+            {             
+                _LowerBodyOctagon.fn_RotateToTargetAngle_DownChain(DegToRad(45), _collaspeLimbSpeed * 8);
+                _RArm?.fn_RotateToTargetAngle_DownChain(DegToRad(-30), _collaspeLimbSpeed * 20);
+                _LArm?.fn_RotateToTargetAngle_DownChain(DegToRad(30), _collaspeLimbSpeed * 20);
+            }
+        }
+
+
+            #endregion
+
+
+            #region Sub - Collapse
+            void Animations_Collapse_KeyFrame()
         {
             _HeadOctagon.fn_RotateTowardsoTargetAngleAtSpeed(1.58f, _collaspeLimbSpeed - _collaspeLimbSpeed / 8);
             _UperBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(0.5f, _collaspeLimbSpeed);
