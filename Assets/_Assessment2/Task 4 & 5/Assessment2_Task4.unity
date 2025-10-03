@@ -2586,7 +2586,7 @@ MonoBehaviour:
   _LArm: {fileID: 0}
   _RArm: {fileID: 0}
   _isDebugging: 0
-  _horizontalDragCoefficient: 0.001
+  _horizontalDragCoefficient: 0.0005
   _horizontalDragPower: 2
   _isMovingSideToSide: 1
   _speed: 2
@@ -2596,15 +2596,12 @@ MonoBehaviour:
   _xMinBoundary: -15
   _isHopping: 1
   _hopHeight: 100
-  _leapHeight: 500
-  _leapForwardSpeed: 20
-  _jumpHeight: 1000
+  _leapHeight: 2500
+  _leapForwardSpeed: 40
+  _jumpHeight: 5000
   _gravity: -0.1
   _isGrounded: 0
-  _leanAngle: 0.25
   _isLeaningLeft: 0
-  _maxWobbleRotation: 0.35
-  _wobbleRotationSpeed: 0.8
   _isHeadWobbling: 1
 --- !u!1 &569695541
 GameObject:
@@ -6021,7 +6018,7 @@ MonoBehaviour:
   _LArm: {fileID: 7102625529464648068}
   _RArm: {fileID: 3825227839382808988}
   _isDebugging: 0
-  _horizontalDragCoefficient: 0.001
+  _horizontalDragCoefficient: 0.0005
   _horizontalDragPower: 2
   _isMovingSideToSide: 1
   _speed: 2
@@ -6031,15 +6028,12 @@ MonoBehaviour:
   _xMinBoundary: -15
   _isHopping: 1
   _hopHeight: 100
-  _leapHeight: 500
-  _leapForwardSpeed: 20
-  _jumpHeight: 1000
+  _leapHeight: 2500
+  _leapForwardSpeed: 40
+  _jumpHeight: 5000
   _gravity: -0.1
   _isGrounded: 0
-  _leanAngle: 0.25
   _isLeaningLeft: 0
-  _maxWobbleRotation: 0.35
-  _wobbleRotationSpeed: 0.8
   _isHeadWobbling: 1
 --- !u!114 &618194998526237371
 MonoBehaviour:
