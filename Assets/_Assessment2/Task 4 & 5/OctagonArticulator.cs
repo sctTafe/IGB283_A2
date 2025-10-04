@@ -8,10 +8,9 @@ namespace ScottBarley.IGB283.Assessment2.Task4
     /// </summary>
     public class OctagonArticulator : MonoBehaviour
     {
+        [Header("Setup")]
         // Reference the limb’s child and controller
         [SerializeField] private List<OctagonArticulator> childObjects;
-        [SerializeField] private Slider _controlRInput; // Rotate Input
-        [SerializeField] private Slider _controlSInput; // Scale Input
         // Keep the joint location from being altered after Start
         [SerializeField] private Vector2 initialJointLocation;
         // The corner positions of each limb
@@ -19,16 +18,27 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         [SerializeField] private Color _colour = Color.white;
         [SerializeField] private Material material;
 
+        [Header("Override Silders")]
+        [SerializeField] private Slider _controlRInput; // Rotate Input
+        [SerializeField] private Slider _controlSInput; // Scale Input
+
+        [Header("Support Tool")]
         [SerializeField] private VertexData _vertexDataSO; //SO to save and strore the vertex data on so i dont keep losing it and having to reenter it
 
         private Mesh _mesh;
         // JointLocation is the position at which the limb is joined to its parent. We will use this as a pivot for rotating.
         private Vector2 _jointLocation;
-        // Store the previous angle to undo
-        private float _lastAngle = 0;
+
+
+        // Store of movment data from intial position
+        private float _lastAngle;
         private float _lastScale;
+        private IGB283Vector _lastTranslation;
 
         public float LastRotationAngle => _lastAngle;
+        public float LastScale => _lastScale;
+        public IGB283Vector LastTranslation => _lastTranslation;
+
 
         // Runs before start
         private void Awake()
@@ -42,6 +52,10 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         {
             //Move limb to starting position
             fn_Move(initialJointLocation);
+
+            _lastAngle = 0f;
+            _lastScale = 0f;
+            _lastTranslation = initialJointLocation;
         }
 
 
@@ -112,6 +126,8 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             // Calculate the translation matrix
             IGB283Transform t = IGB283Transform.Translate(offset.x, offset.y);
             ApplyTransformation(t);
+
+            _lastTranslation = offset;
         }
 
 

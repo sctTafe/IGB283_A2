@@ -1137,8 +1137,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childObjects: []
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0, y: 0}
   _limbVertices:
   - {x: 0.014418244, y: -0.20252526, z: 0}
@@ -1151,6 +1149,8 @@ MonoBehaviour:
   - {x: 0.021399975, y: 0.06353971, z: 0}
   _colour: {r: 0.7075472, g: 0.23525023, b: 0.09011214, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: 4b482d5d1c271174694093806d00f57b, type: 2}
 --- !u!23 &285239108
 MeshRenderer:
@@ -2583,8 +2583,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childObjects: []
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0, y: 0}
   _limbVertices:
   - {x: -0.009169102, y: 0.08670089, z: 0}
@@ -2597,6 +2595,8 @@ MonoBehaviour:
   - {x: -0.005188614, y: -0.10503927, z: 0}
   _colour: {r: 0.031817384, g: 0.2151137, b: 0.5188679, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: 6b4dee35c8f4b5743aad951d973247b1, type: 2}
 --- !u!4 &458184178
 Transform:
@@ -3379,13 +3379,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae47353abceffee4fb1c34f548c4cfa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isDebugging: 0
   _HeadOctagon: {fileID: 924346951}
   _UperBodyOctagon: {fileID: 9087502606367769146}
   _LowerBodyOctagon: {fileID: 1398337149}
   _Root: {fileID: 1986339258}
   _LArm: {fileID: 0}
   _RArm: {fileID: 0}
-  _isDebugging: 0
   _horizontalDragCoefficient: 0.0005
   _horizontalDragPower: 2
   _isMovingSideToSide: 1
@@ -3401,8 +3401,15 @@ MonoBehaviour:
   _jumpHeight: 3000
   _gravity: -0.05
   _isGrounded: 0
-  _isLeaningLeft: 1
+  _maxWobbleRotation: 0.25
+  _wobbleRotationSpeed: 0.7
   _isHeadWobbling: 1
+  _leanAngle: 0.15
+  _leanAnimationSpeed: 2
+  _collaspeLimbSpeed: 2
+  _jumpAnimationSpeed: 2
+  _leapAnimationSpeed: 2
+  _leapAngle: 45
 --- !u!1 &552540593
 GameObject:
   m_ObjectHideFlags: 0
@@ -4927,8 +4934,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childObjects: []
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0, y: 1.42}
   _limbVertices:
   - {x: 0.2730903, y: 0.02080297, z: 0}
@@ -4941,6 +4946,8 @@ MonoBehaviour:
   - {x: -0.2292969, y: 0.02080297, z: 0}
   _colour: {r: 0.7075472, g: 0.23525023, b: 0.09011214, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: 71fc6990b6f0fee47bb1d18e3fce13b0, type: 2}
 --- !u!1 &925354949
 GameObject:
@@ -5409,8 +5416,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childObjects: []
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0, y: 0}
   _limbVertices:
   - {x: 0.0045785215, y: -0.10864543, z: 0}
@@ -5423,6 +5428,8 @@ MonoBehaviour:
   - {x: 0.009609881, y: 0.08307028, z: 0}
   _colour: {r: 0.031817384, g: 0.2151137, b: 0.5188679, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: d9b97d3847de2bf499d8b316628a0795, type: 2}
 --- !u!4 &982165304
 Transform:
@@ -6241,8 +6248,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childObjects: []
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0, y: 0}
   _limbVertices:
   - {x: 0.004216492, y: -0.07010609, z: 0}
@@ -6255,6 +6260,8 @@ MonoBehaviour:
   - {x: 0.008094072, y: 0.07765256, z: 0}
   _colour: {r: 0.41509432, g: 0.06069775, b: 0.33756703, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: bec19f8657ecc154e8cbc9c7c72afd84, type: 2}
 --- !u!23 &1171653802
 MeshRenderer:
@@ -7392,8 +7399,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   childObjects:
   - {fileID: 9087502606367769146}
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0, y: 0.825}
   _limbVertices:
   - {x: 0.182, y: 0.05699998, z: 0}
@@ -7406,6 +7411,8 @@ MonoBehaviour:
   - {x: -0.18, y: 0.05699998, z: 0}
   _colour: {r: 0.031817384, g: 0.2151137, b: 0.5188679, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: cedbda6d93902c847bd3005170d8dbac, type: 2}
 --- !u!1 &1468029275
 GameObject:
@@ -8870,8 +8877,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childObjects: []
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0, y: 0}
   _limbVertices:
   - {x: -0.0077877045, y: 0.081904635, z: 0}
@@ -8884,6 +8889,8 @@ MonoBehaviour:
   - {x: -0.0047198534, y: -0.065873206, z: 0}
   _colour: {r: 0.41509432, g: 0.06069775, b: 0.33756703, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: c864de8eabfc9064ea471a215e525b45, type: 2}
 --- !u!23 &1850339277
 MeshRenderer:
@@ -9331,8 +9338,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   childObjects:
   - {fileID: 1398337149}
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0, y: 0}
   _limbVertices:
   - {x: 0.442, y: 0, z: 0}
@@ -9345,6 +9350,8 @@ MonoBehaviour:
   - {x: -0.357, y: 0, z: 0}
   _colour: {r: 0, g: 0.46226418, b: 0.04946298, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: 28ae31544d3b2e246b49cfd3257f49bb, type: 2}
 --- !u!1 &2016485434
 GameObject:
@@ -9882,8 +9889,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childObjects: []
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0, y: 0}
   _limbVertices:
   - {x: -0.021499276, y: 0.09883838, z: 0}
@@ -9896,6 +9901,8 @@ MonoBehaviour:
   - {x: -0.015974164, y: -0.16726077, z: 0}
   _colour: {r: 0.7075472, g: 0.23525023, b: 0.09011214, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: 6e3453db95098594491e2ae307f355bd, type: 2}
 --- !u!23 &2086776180
 MeshRenderer:
@@ -10130,13 +10137,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae47353abceffee4fb1c34f548c4cfa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isDebugging: 0
   _HeadOctagon: {fileID: 2140959702036116641}
   _UperBodyOctagon: {fileID: 2838964544307857453}
   _LowerBodyOctagon: {fileID: 2813804715619715333}
   _Root: {fileID: 4301117923240597613}
   _LArm: {fileID: 7102625529464648068}
   _RArm: {fileID: 3825227839382808988}
-  _isDebugging: 0
   _horizontalDragCoefficient: 0.0005
   _horizontalDragPower: 2
   _isMovingSideToSide: 1
@@ -10152,8 +10159,15 @@ MonoBehaviour:
   _jumpHeight: 5000
   _gravity: -0.075
   _isGrounded: 0
-  _isLeaningLeft: 0
+  _maxWobbleRotation: 0.25
+  _wobbleRotationSpeed: 0.7
   _isHeadWobbling: 1
+  _leanAngle: 0.15
+  _leanAnimationSpeed: 2
+  _collaspeLimbSpeed: 2
+  _jumpAnimationSpeed: 2
+  _leapAnimationSpeed: 2
+  _leapAngle: 45
 --- !u!114 &618194998526237371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10167,8 +10181,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childObjects: []
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: -0.754, y: 0.05}
   _limbVertices:
   - {x: -0.021499276, y: 0.09883838, z: 0}
@@ -10181,6 +10193,8 @@ MonoBehaviour:
   - {x: -0.015974164, y: -0.16726077, z: 0}
   _colour: {r: 0.7075472, g: 0.23525023, b: 0.09011214, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: 6e3453db95098594491e2ae307f355bd, type: 2}
 --- !u!4 &818030902271264760
 Transform:
@@ -10436,8 +10450,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childObjects: []
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0, y: 1.42}
   _limbVertices:
   - {x: 0.2730903, y: 0.02080297, z: 0}
@@ -10450,6 +10462,8 @@ MonoBehaviour:
   - {x: -0.2292969, y: 0.02080297, z: 0}
   _colour: {r: 0.7075472, g: 0.23525023, b: 0.09011214, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: 6e3453db95098594491e2ae307f355bd, type: 2}
 --- !u!1 &2661602677739864638
 GameObject:
@@ -10503,8 +10517,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   childObjects:
   - {fileID: 2838964544307857453}
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0, y: 0.825}
   _limbVertices:
   - {x: 0.182, y: 0.05699998, z: 0}
@@ -10517,6 +10529,8 @@ MonoBehaviour:
   - {x: -0.18, y: 0.05699998, z: 0}
   _colour: {r: 0.031817384, g: 0.2151137, b: 0.5188679, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: 6b4dee35c8f4b5743aad951d973247b1, type: 2}
 --- !u!114 &2838964544307857453
 MonoBehaviour:
@@ -10534,8 +10548,6 @@ MonoBehaviour:
   - {fileID: 2140959702036116641}
   - {fileID: 7102625529464648068}
   - {fileID: 3825227839382808988}
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0, y: 1.9}
   _limbVertices:
   - {x: 0.136, y: 0.015, z: 0}
@@ -10548,6 +10560,8 @@ MonoBehaviour:
   - {x: -0.143, y: 0.015, z: 0}
   _colour: {r: 0.41509432, g: 0.06069775, b: 0.33756703, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: c864de8eabfc9064ea471a215e525b45, type: 2}
 --- !u!4 &2893625140816424469
 Transform:
@@ -10586,8 +10600,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   childObjects:
   - {fileID: 8038496473684400789}
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0.985, y: 0}
   _limbVertices:
   - {x: 0.004216492, y: -0.07010609, z: 0}
@@ -10600,6 +10612,8 @@ MonoBehaviour:
   - {x: 0.008094072, y: 0.07765256, z: 0}
   _colour: {r: 0.41509432, g: 0.06069775, b: 0.33756703, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: bec19f8657ecc154e8cbc9c7c72afd84, type: 2}
 --- !u!1 &3334660043603253669
 GameObject:
@@ -10666,8 +10680,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   childObjects:
   - {fileID: 3207577688523583304}
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0.325, y: 0.8}
   _limbVertices:
   - {x: 0.0045785215, y: -0.10864543, z: 0}
@@ -10680,6 +10692,8 @@ MonoBehaviour:
   - {x: 0.009609881, y: 0.08307028, z: 0}
   _colour: {r: 0.031817384, g: 0.2151137, b: 0.5188679, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: d9b97d3847de2bf499d8b316628a0795, type: 2}
 --- !u!114 &4066165634798289819
 MonoBehaviour:
@@ -10733,8 +10747,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   childObjects:
   - {fileID: 2813804715619715333}
-  _controlRInput: {fileID: 1374403258}
-  _controlSInput: {fileID: 1639875562}
   initialJointLocation: {x: 0, y: 0}
   _limbVertices:
   - {x: 0.442, y: 0, z: 0}
@@ -10747,6 +10759,8 @@ MonoBehaviour:
   - {x: -0.357, y: 0, z: 0}
   _colour: {r: 0, g: 0.46226418, b: 0.04946298, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 1374403258}
+  _controlSInput: {fileID: 1639875562}
   _vertexDataSO: {fileID: 11400000, guid: 28ae31544d3b2e246b49cfd3257f49bb, type: 2}
 --- !u!23 &4409450645699828090
 MeshRenderer:
@@ -11052,8 +11066,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   childObjects:
   - {fileID: 618194998526237371}
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: -0.985, y: 0}
   _limbVertices:
   - {x: -0.0077877045, y: 0.081904635, z: 0}
@@ -11066,6 +11078,8 @@ MonoBehaviour:
   - {x: -0.0047198534, y: -0.065873206, z: 0}
   _colour: {r: 0.41509432, g: 0.06069775, b: 0.33756703, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: c864de8eabfc9064ea471a215e525b45, type: 2}
 --- !u!33 &6738692798507003810
 MeshFilter:
@@ -11097,8 +11111,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   childObjects:
   - {fileID: 6525792635944257050}
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: -0.325, y: 0.8}
   _limbVertices:
   - {x: -0.009169102, y: 0.08670089, z: 0}
@@ -11111,6 +11123,8 @@ MonoBehaviour:
   - {x: -0.005188614, y: -0.10503927, z: 0}
   _colour: {r: 0.031817384, g: 0.2151137, b: 0.5188679, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: 6b4dee35c8f4b5743aad951d973247b1, type: 2}
 --- !u!4 &7270199452197495634
 Transform:
@@ -11201,8 +11215,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childObjects: []
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0.754, y: 0.05}
   _limbVertices:
   - {x: 0.014418244, y: -0.20252526, z: 0}
@@ -11215,6 +11227,8 @@ MonoBehaviour:
   - {x: 0.021399975, y: 0.06353971, z: 0}
   _colour: {r: 0.7075472, g: 0.23525023, b: 0.09011214, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: 4b482d5d1c271174694093806d00f57b, type: 2}
 --- !u!23 &8131402749757094013
 MeshRenderer:
@@ -11338,8 +11352,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   childObjects:
   - {fileID: 924346951}
-  _controlRInput: {fileID: 0}
-  _controlSInput: {fileID: 0}
   initialJointLocation: {x: 0, y: 1.9}
   _limbVertices:
   - {x: 0.136, y: 0.015, z: 0}
@@ -11352,6 +11364,8 @@ MonoBehaviour:
   - {x: -0.143, y: 0.015, z: 0}
   _colour: {r: 0.41509432, g: 0.06069775, b: 0.33756703, a: 1}
   material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  _controlRInput: {fileID: 0}
+  _controlSInput: {fileID: 0}
   _vertexDataSO: {fileID: 11400000, guid: 6fa74bbd2213c8d49a48391e9a738004, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

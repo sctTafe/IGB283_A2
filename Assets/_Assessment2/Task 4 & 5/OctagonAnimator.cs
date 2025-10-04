@@ -5,6 +5,9 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 {
     public class OctagonAnimator : MonoBehaviour
     {
+        [Header("Debugging")]
+        [SerializeField] bool _isDebugging;
+
         // -- Setup --
         [Header("Body Parts")]
         [SerializeField] OctagonArticulator _HeadOctagon;
@@ -14,11 +17,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         [SerializeField] OctagonArticulator _LArm;
         [SerializeField] OctagonArticulator _RArm;
 
-        [Header("Debugging")]
-        [SerializeField] bool _isDebugging;
-
         // -- Movment --
-
         [Header("Movement - Sideways")]
         [SerializeField] private float _horizontalDragCoefficient = 0.5f;   // strength of drag
         [SerializeField] private float _horizontalDragPower = 2f;           // Growth of drag strength to speed; 1 = linear, 2 = quadratic, 3 = cubic
@@ -34,6 +33,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         [Header("Movement - Hopping")]
         [SerializeField] bool _isHopping = true;
         [SerializeField] float _hopHeight = 0.0010f;
+        
         [Header("Movement - Leaping")]
         [SerializeField] float _leapHeight = 0.0035f;
         [SerializeField] float _leapForwardSpeed = 6f;
@@ -46,22 +46,31 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
         // -- Animations --
 
-        [Header("Animation - Lean In Direction Of Travel")]
-        float _leanAngle = 0.15f; //radians
-        [SerializeField] bool _isLeaningLeft;
-
-        [Header("Animation - Head Wobble")]
-        float _maxWobbleRotation = 0.25f; //radians
-        float _wobbleRotationSpeed = 0.7f; //radians/s
+        [Header("Animation - Head Nod")]
+        [SerializeField] float _maxWobbleRotation = 0.25f; //radians
+        [SerializeField] float _wobbleRotationSpeed = 0.7f; //radians/s
         [SerializeField] bool _isHeadWobbling = true;
         bool _HeadWobbleRotatingClockwise;
+
+        [Header("Animation - Lean In Direction Of Travel")]
+        [SerializeField] float _leanAngle = 0.15f; //radians
+        [SerializeField] float _leanAnimationSpeed =2f;
+
+        [Header("Animation - Collapse Ainmiation Speed")]
+        [SerializeField] float _collaspeLimbSpeed = 2f;
+
+        [Header("Animation - Jump Ainmiation Speed")]
+        [SerializeField] float _jumpAnimationSpeed = 2f;
+
+        [Header("Animation - Leap Ainmiation Speed")]
+        [SerializeField] float _leapAnimationSpeed = 2f;
+        [SerializeField] float _leapAngle = 45f;
 
         // -- Specail States --
         float _collapseStateTimer;
         bool _isCollapsed;
         private collapseStateStage _currentCollapseState;
-        float _collaspeLimbSpeed = 2f;
-
+        
         IGB283Vector _startingPosition;
         IGB283Vector _currentPosition;
         IGB283Vector _velocity = new IGB283Vector();
@@ -81,8 +90,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         private void Start()
         {
             //Get starting postion of root
-            _startingPosition = transform.position;
-            _currentPosition = _startingPosition;
+            _currentPosition = _startingPosition = transform.position;
         }
 
         private void Update()
@@ -96,7 +104,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
 
             // -- Animation --
-            Update_CollapseStateAnimations();
+            Update_CollapseStateAnimations(); //NOTE: moved out of the state based system to override a bunch of stuff
 
             switch (_currentAimationState)
             {
@@ -451,16 +459,19 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         void Animations_Jump_Prep()
         {
 
-            _Root.fn_RotateToTargetAngle_DownChain(0f, _collaspeLimbSpeed * 5);
-            _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-45), _collaspeLimbSpeed * 10 );
-            _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-45), _collaspeLimbSpeed * 10);
+            _Root.fn_RotateToTargetAngle_DownChain(0f, _jumpAnimationSpeed * 5);
+            _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-45), _jumpAnimationSpeed * 10 );
+            _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-45), _jumpAnimationSpeed * 10);
         }
         void Animation_Jump_ArmsUp()
         {
-            _Root.fn_RotateToTargetAngle_DownChain(0f, _collaspeLimbSpeed * 5);
-            _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(45), _collaspeLimbSpeed * 10);
-            _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-45), _collaspeLimbSpeed * 10);
+            _Root.fn_RotateToTargetAngle_DownChain(0f, _jumpAnimationSpeed * 5);
+            _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(45), _jumpAnimationSpeed * 10);
+            _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-45), _jumpAnimationSpeed * 10);
         }
+
+        
+
         #endregion
 
         #region Foward Leap
@@ -480,20 +491,21 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             _currentAimationState = AnimationsState.Hopping;
         }
 
+
         void Animation_Leap()
         {
             // Lean Into Leap & Lower arms
             if (_MovingToTheRight)
             {
-                _LowerBodyOctagon.fn_RotateToTargetAngle_DownChain(DegToRad(-45), _collaspeLimbSpeed * 8);
-                _RArm?.fn_RotateToTargetAngle_DownChain(DegToRad(-30), _collaspeLimbSpeed * 20);
-                _LArm?.fn_RotateToTargetAngle_DownChain(DegToRad(30), _collaspeLimbSpeed * 20);
+                _LowerBodyOctagon.fn_RotateToTargetAngle_DownChain(DegToRad(-_leapAngle), _leapAnimationSpeed * 8);
+                _RArm?.fn_RotateToTargetAngle_DownChain(DegToRad(-_leapAngle*0.75f), _leapAnimationSpeed * 20);
+                _LArm?.fn_RotateToTargetAngle_DownChain(DegToRad(_leapAngle * 0.75f), _leapAnimationSpeed * 20);
             }
             else
             {             
-                _LowerBodyOctagon.fn_RotateToTargetAngle_DownChain(DegToRad(45), _collaspeLimbSpeed * 8);
-                _RArm?.fn_RotateToTargetAngle_DownChain(DegToRad(-30), _collaspeLimbSpeed * 20);
-                _LArm?.fn_RotateToTargetAngle_DownChain(DegToRad(30), _collaspeLimbSpeed * 20);
+                _LowerBodyOctagon.fn_RotateToTargetAngle_DownChain(DegToRad(_leapAngle), _leapAnimationSpeed * 8);
+                _RArm?.fn_RotateToTargetAngle_DownChain(DegToRad(-_leapAngle * 0.75f), _leapAnimationSpeed * 20);
+                _LArm?.fn_RotateToTargetAngle_DownChain(DegToRad(_leapAngle * 0.75f), _leapAnimationSpeed * 20);
             }
         }
 
@@ -544,9 +556,9 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 //_LowerBodyOctagon.fn_RotatePartAroundPivot(-_leanAngle);
                 _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(-_leanAngle, 0.5f);
 
-                _LArm?.fn_RotateToTargetAngle_DownChain(DegToRad(0), _collaspeLimbSpeed/2f);
-                _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(50), _collaspeLimbSpeed);
-                _RArm?.fn_RotateToTargetAngle_DownChain(DegToRad(10), _collaspeLimbSpeed);
+                _LArm?.fn_RotateToTargetAngle_DownChain(DegToRad(0), _leanAnimationSpeed / 2f);
+                _LArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(50), _leanAnimationSpeed);
+                _RArm?.fn_RotateToTargetAngle_DownChain(DegToRad(10), _leanAnimationSpeed);
             }
 
             // moving left
@@ -556,13 +568,14 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 //_LowerBodyOctagon.fn_RotatePartAroundPivot(_leanAngle);
                 _LowerBodyOctagon.fn_RotateTowardsoTargetAngleAtSpeed(_leanAngle, 0.5f);
 
-                _LArm?.fn_RotateToTargetAngle_DownChain(DegToRad(-10), _collaspeLimbSpeed);
+                _LArm?.fn_RotateToTargetAngle_DownChain(DegToRad(-10), _leanAnimationSpeed);
                 _RArm?.fn_RotateToTargetAngle_DownChain(DegToRad(0), _collaspeLimbSpeed / 2f);
-                _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-50), _collaspeLimbSpeed);
+                _RArm?.fn_RotateTowardsoTargetAngleAtSpeed(DegToRad(-50), _leanAnimationSpeed);
             }
         }
         /// <summary>
-        /// Rotates 'head' around piviot, ping ponging between a user specified angle 
+        /// DOSE: Rotates 'head' around piviot, ping ponging between a user specified angle
+        /// NOTE: this was a first version of impling the movments, the other animations use a better updated version
         /// </summary>
         void headBob()
         {
