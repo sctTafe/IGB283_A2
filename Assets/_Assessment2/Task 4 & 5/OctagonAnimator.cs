@@ -501,7 +501,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             #endregion
 
 
-            #region Sub - Collapse
+        #region Sub - Collapse
             void Animations_Collapse_KeyFrame()
         {
             _HeadOctagon.fn_RotateTowardsoTargetAngleAtSpeed(1.58f, _collaspeLimbSpeed - _collaspeLimbSpeed / 8);

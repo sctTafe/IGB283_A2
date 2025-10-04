@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 namespace ScottBarley.IGB283.Assessment2.Task4
 {
     /// <summary>
@@ -23,11 +24,26 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         [SerializeField] KeyCode Down = KeyCode.S;
         [SerializeField] KeyCode Special = KeyCode.Z;
 
+        [Header("Btn Inputs")]
+        [SerializeField] Button button_Left;
+        [SerializeField] Button button_Right;
+        [SerializeField] Button button_Up;
+        [SerializeField] Button button_Down;
+        [SerializeField] Button button_Collapse;
+
         float _collapseTime = 2f;
 
         float _controlerDisabledTime;
         bool _isControlesDisabled;
 
+        private void Start()
+        {
+            if (button_Left != null) button_Left.onClick.AddListener(DoLeft);
+            if (button_Right != null) button_Right.onClick.AddListener(DoRight);
+            if (button_Up != null) button_Up.onClick.AddListener(DoUpKey);
+            if (button_Down != null) button_Down.onClick.AddListener(DoDownKey);
+            if (button_Collapse != null) button_Collapse.onClick.AddListener(DoSpecial);
+        }
 
         void Update()
         {
@@ -41,38 +57,63 @@ namespace ScottBarley.IGB283.Assessment2.Task4
             // Set Movement Left
             if (Input.GetKeyDown(Left))
             {
-                Debug.Log("Left pressed");
-                _controler.fn_SetMoveLeft();
+                DoLeft();
             }
 
             // Set Movement Right
             if (Input.GetKeyDown(Right))
             {
-                Debug.Log("Right pressed");
-                _controler.fn_SetMoveRight();
+                DoRight();
             }
 
             // Jumping Up
             if (Input.GetKeyDown(Up))
             {
-                Debug.Log("Up pressed");
-                _controler.fn_TryJump_Up();
+                DoUpKey();
             }
 
             // Jumping Forward
             if (Input.GetKeyDown(Down))
             {
-                Debug.Log("Down pressed");
-                _controler.fn_TryJump_Forward();
+                DoDownKey();
             }
 
             // Collapses 
             if (Input.GetKeyDown(Special))
             {
-                Debug.Log("Floppy pressed");
-                _controler.fn_Collapse(_collapseTime);
-                _controlerDisabledTime = Time.time + _collapseTime;
+                DoSpecial();
             }
+        }
+
+        private void DoSpecial()
+        {
+            Debug.Log("Floppy Input");
+            _controler.fn_Collapse(_collapseTime);
+            _controlerDisabledTime = Time.time + _collapseTime;
+        }
+
+        private void DoDownKey()
+        {
+            Debug.Log("Down Input");
+            _controler.fn_TryJump_Forward();
+        }
+
+        private void DoUpKey()
+        {
+            Debug.Log("Up Input");
+            _controler.fn_TryJump_Up();
+        }
+
+        private void DoRight()
+        {
+            Debug.Log("Right Input");
+            _controler.fn_SetMoveRight();
+        }
+
+        private void DoLeft()
+        {
+            Debug.Log("Left Input");
+            _controler.fn_SetMoveLeft();
         }
 
         private void Update_Timer()
