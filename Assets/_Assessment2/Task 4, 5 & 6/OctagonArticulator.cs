@@ -299,15 +299,29 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 colors[i] = _colour;
             }
 
-            // Generate UVs
+            // Genrate UV Map
             Vector2[] uvs = new Vector2[_limbVertices.Length];
+
+            // Bounds of XY plane vertices
+            float minX = float.MaxValue, maxX = float.MinValue;
+            float minY = float.MaxValue, maxY = float.MinValue;
+
             for (int i = 0; i < _limbVertices.Length; i++)
             {
                 Vector3 v = _limbVertices[i];
-                uvs[i] = new Vector2(
-                    Mathf.InverseLerp(-1f, 1f, v.x),
-                    Mathf.InverseLerp(-1f, 1f, v.y)
-                );
+                if (v.x < minX) minX = v.x;
+                if (v.x > maxX) maxX = v.x;
+                if (v.y < minY) minY = v.y;
+                if (v.y > maxY) maxY = v.y;
+            }
+
+            // Map each vertex to UV space
+            for (int i = 0; i < _limbVertices.Length; i++)
+            {
+                Vector3 v = _limbVertices[i];
+                float u = Mathf.InverseLerp(minX, maxX, v.x);
+                float vCoord = Mathf.InverseLerp(minY, maxY, v.y);
+                uvs[i] = new Vector2(u, vCoord);
             }
 
 
