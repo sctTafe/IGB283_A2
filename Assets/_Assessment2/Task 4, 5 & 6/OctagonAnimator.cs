@@ -75,7 +75,7 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         IGB283Vector _currentPosition;
         IGB283Vector _velocity = new IGB283Vector();
 
-
+        public IGB283Vector CurrentPosition => _currentPosition;
         public enum AnimationsState
         {
             Hopping,

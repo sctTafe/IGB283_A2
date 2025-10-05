@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Universal Render Pipeline_IGB283 Shader - Vertex Displacement + PBR
+  m_Name: BrushedMetal
   m_Shader: {fileID: 4800000, guid: 5e2af882a5e2907489de4c75779ca1d5, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -24,7 +24,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseColor:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 18ce9f1b73cc29c45ae7df8427e98ddc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -32,24 +32,24 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 3c4e2f6f3a45f944da04fe134c501935, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d68f386ee0448914a90e6adef2cdff5a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RoughnessMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 73b68ef5fb19a4241b87710c5688cb54, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _DisplacementSpeed: 1
-    - _DisplacementStrength: 0.1
-    - _Metallic: 0
-    - _NormalScale: 1
-    - _Smoothness: 0.5
+    - _DisplacementSpeed: 6.61
+    - _DisplacementStrength: 0
+    - _Metallic: 0.279
+    - _NormalScale: 1.348
+    - _Smoothness: 0.571
     m_Colors:
     - _ColorTint: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

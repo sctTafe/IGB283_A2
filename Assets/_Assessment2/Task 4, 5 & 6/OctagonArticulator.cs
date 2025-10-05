@@ -269,15 +269,28 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         private void DrawLimb()
         {
             // octagon
+            //int[] triangles = new int[]
+            //{
+            //    0, 1, 2,    // t0
+            //    0, 2, 3,    // t1
+            //    0, 3, 4,    // t2
+            //    0, 4, 5,    // t3
+            //    0, 5, 6,    // t4
+            //    0, 6, 7,    // t5
+            //};
+
+            // octagon (reversed winding) - reversed so front face is to -Z to match the setup of the cammera and controls
             int[] triangles = new int[]
             {
-                0, 1, 2,    // t0
-                0, 2, 3,    // t1
-                0, 3, 4,    // t2
-                0, 4, 5,    // t3
-                0, 5, 6,    // t4
-                0, 6, 7,    // t5
+                0, 2, 1,    // t0
+                0, 3, 2,    // t1
+                0, 4, 3,    // t2
+                0, 5, 4,    // t3
+                0, 6, 5,    // t4
+                0, 7, 6,    // t5
             };
+
+
 
             Color[] colors = new Color[_limbVertices.Length];
 
@@ -286,9 +299,25 @@ namespace ScottBarley.IGB283.Assessment2.Task4
                 colors[i] = _colour;
             }
 
+            // Generate UVs
+            Vector2[] uvs = new Vector2[_limbVertices.Length];
+            for (int i = 0; i < _limbVertices.Length; i++)
+            {
+                Vector3 v = _limbVertices[i];
+                uvs[i] = new Vector2(
+                    Mathf.InverseLerp(-1f, 1f, v.x),
+                    Mathf.InverseLerp(-1f, 1f, v.y)
+                );
+            }
+
+
             _mesh.vertices = _limbVertices;
             _mesh.triangles = triangles;
             _mesh.colors = colors;
+            _mesh.uv = uvs;
+
+            _mesh.RecalculateBounds();
+            _mesh.RecalculateNormals();
         }
 
 
