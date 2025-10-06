@@ -405,23 +405,6 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
         #region Animations
 
-
-        private void Update_AnimationState_Hopping()
-        {
-            if (_isHeadWobbling)
-            {
-                headBob();
-                UpperBodyBob();
-            }
-
-            if (_isMovingSideToSide)
-            {
-                LeanInDirectionOfTravel();
-            }
-        }
-
-
-
         #region Sun - Jumping
         public enum jumpingStateStage
         {
@@ -512,7 +495,6 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
             #endregion
 
-
         #region Sub - Collapse
             void Animations_Collapse_KeyFrame()
         {
@@ -538,6 +520,20 @@ namespace ScottBarley.IGB283.Assessment2.Task4
         #endregion
 
         #region Sub - Hopping
+        private void Update_AnimationState_Hopping()
+        {
+            if (_isHeadWobbling)
+            {
+                headBob();
+                UpperBodyBob();
+            }
+
+            if (_isMovingSideToSide)
+            {
+                LeanInDirectionOfTravel();
+            }
+        }
+
         /// <summary>
         /// Lean in the direction of travel from the lower body pivot point
         /// </summary>

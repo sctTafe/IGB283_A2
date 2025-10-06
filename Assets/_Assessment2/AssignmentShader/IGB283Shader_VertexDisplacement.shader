@@ -82,7 +82,6 @@ Shader "Unlit/IGB283 Shader - Vertex Displacement"
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
-
                 // --- Vertex displacement ---
                 float3 pos = IN.positionOS.xyz;
                 float time = _Time.y * _AnimationSpeed;
