@@ -38,7 +38,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Alpha: 0.636
-    - _Amplitude: 0.076
+    - _Amplitude: 0.118
     - _AnimationSpeed: 0.73
     - _BumpScale: 0.5
     - _Frequency: 2.53
