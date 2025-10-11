@@ -14,8 +14,11 @@ namespace ScottBarley.IGB283.Assessment2.Task4
     /// </summary>
     public class InputControler : MonoBehaviour
     {
+        [Header("Debugging")]
+        [SerializeField] bool _isDebugging;
+
         [Header("Setup")]
-        [SerializeField] private OctagonAnimator _controler;
+        [SerializeField] OctagonAnimator _controler;
 
         [Header("Key Bindings")]
         [SerializeField] KeyCode Left = KeyCode.A;
@@ -87,32 +90,32 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
         private void DoSpecial()
         {
-            Debug.Log("Floppy Input");
+            if(_isDebugging) Debug.Log("Floppy Input");
             _controler.fn_Collapse(_collapseTime);
             _controlerDisabledTime = Time.time + _collapseTime;
         }
 
         private void DoDownKey()
         {
-            Debug.Log("Down Input");
+            if (_isDebugging) Debug.Log("Down Input");
             _controler.fn_TryJump_Forward();
         }
 
         private void DoUpKey()
         {
-            Debug.Log("Up Input");
+            if (_isDebugging) Debug.Log("Up Input");
             _controler.fn_TryJump_Up();
         }
 
         private void DoRight()
         {
-            Debug.Log("Right Input");
+            if (_isDebugging) Debug.Log("Right Input");
             _controler.fn_SetMoveRight();
         }
 
         private void DoLeft()
         {
-            Debug.Log("Left Input");
+            if (_isDebugging) Debug.Log("Left Input");
             _controler.fn_SetMoveLeft();
         }
 

@@ -422,19 +422,21 @@ namespace ScottBarley.IGB283.Assessment2.Task4
 
         private void Trigger_JumpAnimationState()
         {
+            _isMovingSideToSide = false;
             _currentAimationState = AnimationsState.Jumping;
             _currentJumpingStageState = jumpingStateStage.jumpPrep;
-            StartCoroutine(WaitAndDo(0.1f, Handle_EndOfJumpPrepStage));
+            StartCoroutine(WaitAndDo(0.2f, Handle_EndOfJumpPrepStage));
         }
 
         void Handle_EndOfJumpPrepStage()
         {
             _currentJumpingStageState = jumpingStateStage.JumpMain;
-            StartCoroutine(WaitAndDo(0.5f, Handle_EndOfJump));
+            StartCoroutine(WaitAndDo(1f, Handle_EndOfJump));
         }
 
         void Handle_EndOfJump()
         {
+            _isMovingSideToSide = true;
             _currentAimationState = AnimationsState.Hopping;
         }
 

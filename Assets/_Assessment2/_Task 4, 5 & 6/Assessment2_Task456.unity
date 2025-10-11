@@ -4524,6 +4524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd4534d6095af24f9b2b2755bef81a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isDebugging: 0
   _controler: {fileID: 535164778}
   Left: 97
   Right: 100
@@ -16069,6 +16070,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd4534d6095af24f9b2b2755bef81a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isDebugging: 0
   _controler: {fileID: 599820162156000851}
   Left: 104
   Right: 107
